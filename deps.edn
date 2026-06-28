@@ -1,0 +1,15 @@
+{:paths ["src"]
+ ;; nagare-clj is a ZERO-third-party-dep finite-volume CFD kernel. Every
+ ;; namespace is .cljc so the solver runs unchanged on JVM / SCI / ClojureScript
+ ;; / GraalVM / kotoba-clj (Clojure-on-WASM). The unstructured mesh, the fvMatrix
+ ;; assembly and the Krylov linear solvers are all pure Clojure — no PETSc, no
+ ;; native BLAS, no OpenFOAM runtime.
+ :deps {}
+ :aliases
+ {;; clojure -M:run  → lid-driven cavity (icoFoam analogue) to stdout
+  :run {:main-opts ["-m" "nagare.demo"]}
+  :test {:extra-paths ["test"]
+         :extra-deps {io.github.cognitect-labs/test-runner
+                      {:git/tag "v0.5.1" :git/sha "dfb30dd"}}
+         :main-opts ["-m" "cognitect.test-runner"]
+         :exec-fn cognitect.test-runner.api/test}}}
