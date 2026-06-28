@@ -81,6 +81,34 @@
             (is (< (Math/abs (aget sx c)) 1e-12))
             (is (< (Math/abs (aget sy c)) 1e-12))))))))
 
+(deftest single-row-mesh-edge-case
+  (testing "an nx×1 mesh (no HORIZONTAL internal faces) is well-formed — the
+            complementary (max 0 (dec ny)) degenerate branch to the 1×ny case"
+    (let [nx 5
+          m (mesh/block-mesh {:nx nx :ny 1 :lx 2.5 :ly 0.4})]
+      (testing "cell count and total volume"
+        (is (= nx (:n-cells m)))
+        (is (< (Math/abs (- 1.0 (mesh/total-volume m))) 1e-12)))   ; 2.5 × 0.4 = 1.0
+      (testing "internal faces = nx−1 (vertical only), boundary = 2·nx + 2·1"
+        (is (= (dec nx) (mesh/internal-face-count m)))
+        (is (= (+ (* 2 nx) 2) (mesh/boundary-face-count m))))
+      (testing "the discrete Gauss identity still holds on the single-row mesh"
+        (let [n (:n-cells m) sx (double-array n) sy (double-array n)
+              ^ints own (:owner m) ^ints nei (:neighbour m)
+              ^doubles ifx (:if-sfx m) ^doubles ify (:if-sfy m)]
+          (dotimes [f (:n-internal m)]
+            (let [o (aget own f) p (aget nei f)]
+              (aset sx o (+ (aget sx o) (aget ifx f))) (aset sy o (+ (aget sy o) (aget ify f)))
+              (aset sx p (- (aget sx p) (aget ifx f))) (aset sy p (- (aget sy p) (aget ify f)))))
+          (doseq [pt (:patches m)]
+            (let [^ints po (:owner pt) ^doubles px (:sfx pt) ^doubles py (:sfy pt)]
+              (dotimes [k (:n pt)]
+                (let [o (aget po k)]
+                  (aset sx o (+ (aget sx o) (aget px k))) (aset sy o (+ (aget sy o) (aget py k)))))))
+          (dotimes [c n]
+            (is (< (Math/abs (aget sx c)) 1e-12))
+            (is (< (Math/abs (aget sy c)) 1e-12))))))))
+
 (deftest discrete-gauss-closed-cell
   (testing "every cell's outward face-area vectors sum to zero (∮ dS = 0) — the
             geometric identity finite-volume conservation rests on"

@@ -125,6 +125,26 @@
         (let [row (mapv (fn [i] (aget ^doubles x (+ (* 1 nx) i))) (range nx))]
           (is (apply > row) (str "row not strictly decreasing: " row)))))))
 
+(deftest momentum-boundary-inflow
+  (testing "the momentum operator's boundary INFLOW branch (F<0 at a fixedValue inlet)
+            adds the convected wall momentum to the source — untested by the cavity,
+            whose walls all carry zero flux"
+    (let [m (mesh/block-mesh {:nx 3 :ny 3})
+          U (field/vol-vector m [0.0 0.0]
+                              {:left {:type :fixed-value :value [2.0 0.0]}   ; inlet
+                               :right {:type :zero-gradient}
+                               :bottom {:type :zero-gradient} :top {:type :zero-gradient}})
+          ;; left patch carries inflow (F<0); everything else zero flux
+          phi {:internal (double-array (:n-internal m))
+               :patches {:left (double-array 3 -1.0) :right (double-array 3 0.0)
+                         :bottom (double-array 3 0.0) :top (double-array 3 0.0)}}
+          M (fvm/momentum m {:nu 1.0e-4 :dt 1.0e12} U phi U)  ; huge dt ⇒ ddt≈0, isolate inflow
+          ^doubles sx (:sx M)]
+      (testing "inlet-column cells (i=0) get a positive x-momentum source"
+        (doseq [c [0 3 6]] (is (pos? (aget sx c)) (str "inlet cell " c " sx>0"))))
+      (testing "outlet-column cells (i=2, no inflow, ddt≈0) have ~zero source"
+        (doseq [c [2 5 8]] (is (< (Math/abs (aget sx c)) 1e-6) (str "cell " c)))))))
+
 (deftest scalar-transport-reverse-flow-bounded
   (testing "leftward flux (F<0) exercises the inflow/outflow convection branches; the
             scalar stays bounded in [0,1] and rises monotonically toward the right inlet"
