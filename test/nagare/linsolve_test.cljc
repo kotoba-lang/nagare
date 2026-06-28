@@ -79,6 +79,16 @@
      :upper (double-array (count faces) -1.0)
      :lower (double-array (count faces) -1.0)}))
 
+(deftest pcg-zero-rhs-edge-case
+  (testing "a zero RHS yields the zero solution with no NaN (b=0 ⇒ x=0; the residual
+            is already zero, so no update can perturb it)"
+    (let [n 16
+          M (tridiag n 2.0 -1.0 -1.0)
+          {:keys [x]} (ls/pcg M (double-array n) {:tol 1e-12 :max-iter 100})]
+      (is (every? #(and (not (Double/isNaN ^double %)) (< (Math/abs ^double %) 1e-12))
+                  (seq x))
+          "solution is exactly zero and finite"))))
+
 (deftest scaled-residual-monitor
   (testing "the normalized residual is 1 for the zero guess, ~0 for the exact solution"
     (let [n 32
