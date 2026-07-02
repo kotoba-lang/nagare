@@ -78,5 +78,5 @@ for the staged roadmap. **Landed so far (29 tests / 598 assertions, all green):*
 
 ```bash
 clojure -M:run      # lid-driven cavity, prints centreline u-velocity profile
-clojure -X:test     # verification suite (Poisson convergence, PCG, cavity centreline)
+clojure -M:test     # verification suite (Poisson convergence, PCG, cavity centreline)
 ```
