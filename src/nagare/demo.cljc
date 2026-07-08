@@ -67,13 +67,28 @@
     {:mesh mesh :state st :profile prof :min-u min-u
      :steps-run (:steps-run st) :converged (:converged st)}))
 
+(defn- parse-int [s]
+  #?(:clj (Integer/parseInt s) :cljs (js/parseInt s 10)))
+
+(defn- fmt4 [n]
+  #?(:clj (format "%.4f" (double n)) :cljs (.toFixed n 4)))
+
+(defn- fmt5-signed
+  "Fixed 5-decimal formatting with a leading space for non-negative values
+  (mirrors Java format's ' ' flag, used here to align the sign column for
+  a printed centreline u-profile that straddles 0; .toFixed has no
+  native equivalent for it on cljs)."
+  [n]
+  (let [s #?(:clj (format "%.5f" (double n)) :cljs (.toFixed n 5))]
+    (if (neg? n) s (str " " s))))
+
 (defn -main [& args]
-  (let [n (if (seq args) (Integer/parseInt (first args)) 32)
+  (let [n (if (seq args) (parse-int (first args)) 32)
         _ (println (str "nagare-clj — lid-driven cavity, Re=100, " n "x" n " grid"))
         {:keys [profile min-u steps-run converged]} (run {:n n :re 100})]
     (println (str "PISO steps run: " steps-run (when converged " (steady)")))
-    (println (format "min centreline u: %.4f  (Ghia Re=100 ~ -0.21)" (double min-u)))
+    (println (str "min centreline u: " (fmt4 min-u) "  (Ghia Re=100 ~ -0.21)"))
     (println "  y        u(x=0.5)")
     (doseq [[y u] profile]
-      (println (format "%.4f   % .5f" (double y) (double u))))
+      (println (str (fmt4 y) "   " (fmt5-signed u))))
     (flush)))
