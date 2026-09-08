@@ -6,7 +6,7 @@
   The `demo` namespace is excluded — it is a JVM `-main` showcase, not the product.
   (This test itself uses slurp and so runs JVM-side; it lints source text.)"
   (:require [clojure.test :refer [deftest is testing]]
-            [clojure.string :as str]))
+            [kotoba.lang.text :as str]))
 
 (def kernel-namespaces
   ["mesh" "field" "fvm" "linsolve" "solver" "transport" "diagnostics"])

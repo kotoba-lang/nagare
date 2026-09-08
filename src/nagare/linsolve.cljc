@@ -23,7 +23,7 @@
   All return `{:x <double-array> :residual <relative> :iterations <n>}`. Vectors
   are primitive `double[]` so the inner loops stay allocation-free and fast enough
   to run in a browser tab."
-  #?(:clj (:require [clojure.string])))
+  #?(:clj (:require [kotoba.lang.text])))
 
 ;; ---------------------------------------------------------------------------
 ;; Primitive vector helpers

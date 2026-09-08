@@ -29,7 +29,7 @@
 
   Everything below is a pure value (arrays + maps). Operators read it; nothing
   mutates it."
-  #?(:clj (:require [clojure.string])))
+  #?(:clj (:require [kotoba.lang.text])))
 
 ;; ---------------------------------------------------------------------------
 ;; Construction
