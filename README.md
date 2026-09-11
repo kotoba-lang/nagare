@@ -77,6 +77,6 @@ for the staged roadmap. **Landed so far (29 tests / 598 assertions, all green):*
   (S3), OpenFOAM case-dir IO (S4).
 
 ```bash
-clojure -M:run      # lid-driven cavity, prints centreline u-velocity profile
-clojure -M:test     # verification suite (Poisson convergence, PCG, cavity centreline)
+kbb -M:run      # lid-driven cavity, prints centreline u-velocity profile
+kbb -M:test     # verification suite (Poisson convergence, PCG, cavity centreline)
 ```
