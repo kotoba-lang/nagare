@@ -1,7 +1,7 @@
 (ns nagare.linsolve-test
   "Krylov solvers: PCG on an SPD 1-D Poisson tridiagonal, BiCGStab on an
   asymmetric system. Both must recover a known solution to tight tolerance."
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [kotoba.test :refer [deftest is testing]]
             [nagare.linsolve :as ls]))
 
 (defn- tridiag

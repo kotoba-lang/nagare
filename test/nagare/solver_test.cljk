@@ -4,7 +4,7 @@
   on a coarse mesh is diffusive, so the dip is shallower than the fine-mesh Ghia
   value of -0.21, but the *shape* (a negative underflow in the lower half, rising
   to the lid) is the physics under test."
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [kotoba.test :refer [deftest is testing]]
             [nagare.demo :as demo]
             [nagare.fvm :as fvm]
             [nagare.diagnostics :as diag]

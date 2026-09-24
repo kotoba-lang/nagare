@@ -1,7 +1,7 @@
 (ns nagare.mesh-test
   "Geometry must be exact: a block mesh's volumes, face counts, and unit outward
   normals are the bedrock every operator stands on."
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [kotoba.test :refer [deftest is testing]]
             [nagare.mesh :as mesh]))
 
 (deftest block-2x2
