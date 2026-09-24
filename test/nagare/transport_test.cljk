@@ -2,7 +2,7 @@
   "The linear-upwind (deferred-correction) scheme must remove the false diffusion
   of first-order upwind: on the same mesh, its L2 error against the analytic 1-D
   convection-diffusion exponential is strictly smaller."
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [kotoba.test :refer [deftest is testing]]
             [nagare.mesh :as mesh]
             [nagare.field :as field]
             [nagare.transport :as transport]))
